@@ -80,6 +80,15 @@ impl Goldilocks {
 	}
 
 	/// Create a field element from a u64, reducing if necessary.
+	///
+	/// NOTE: despite the name, **no reduction is performed**: the internal
+	/// representation is deliberately non-canonical (`value` is stored as-is).
+	/// Convert to the canonical representative with [`Self::as_canonical_u64`]
+	/// before serializing, and use the fallible
+	/// `serialization::bytes_to_digest` / `bytes_to_felts_compact` builders
+	/// whenever the input bytes are not already known to be `< P` — an
+	/// unreduced value of `P` aliases with `0` and would make the encoding
+	/// non-injective.
 	#[inline]
 	pub fn from_u64(x: u64) -> Self {
 		Self::new(x)
